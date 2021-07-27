@@ -1,7 +1,7 @@
 // ###############################################################################################
 //                                      DOM POPULATOR:                  
 // ###############################################################################################
-
+let SELECTED_CARDS = [];
 
 const IMAGES_PATH = [
     "../assets/gif/bobrossparrot.gif",
@@ -30,8 +30,6 @@ function cardGenerator(howManyCardShouldBeGenerated) {
 
     const randomImagePathOne = shuffleArray(IMAGES_PATH, Number(howManyCardShouldBeGenerated)/2);
     const randomImagePathTwo = shuffleArray(randomImagePathOne, randomImagePathOne.length);
-    console.log("randomImagePathTWO: ")
-    console.log(randomImagePathTwo)
 
     for(let i = 0; i < Number(howManyCardShouldBeGenerated); i++) {
         card = document.createElement("div");
@@ -39,6 +37,7 @@ function cardGenerator(howManyCardShouldBeGenerated) {
         let image = document.createElement("img")
         image.src = "../assets/front.png";
         image.alt = "parrot draw";
+        image.id = "static-img";
 
         let gif = document.createElement("img");
         gif.src = i < (Number(howManyCardShouldBeGenerated)/2) 
@@ -46,11 +45,14 @@ function cardGenerator(howManyCardShouldBeGenerated) {
             : randomImagePathTwo[i - (Number(howManyCardShouldBeGenerated))/2];
     
         gif.alt = "Card gif";
-        gif.className = "hidden"
+        gif.className = "hidden";
+        gif.id = "gif";
 
         /* card.onclick = cardGenerator; */
         card.appendChild(image);
         card.appendChild(gif);
+        card.className = 'unactive';
+        card.onclick = cardActivator;
         mainTag.appendChild(card);
     }
 }
@@ -108,4 +110,49 @@ function shuffleArray(array, length) {
 //                                      GAME LOGIC:                
 // ###############################################################################################
 
+
+
+function cardActivator() {
+    if(SELECTED_CARDS.length === 2 || this.className === "active") { // prevents from adding the same card to the SELECTED_CARDS array
+        return;
+    }
+    console.log("ativei")
+    card = this;
+    card.className = "active";
+    card.querySelector("#gif").classList.toggle("hidden")
+    card.querySelector("#static-img").classList.toggle("hidden")
+
+    SELECTED_CARDS.push(card);
+    parityChecker();
+}
+
+function parityChecker() {
+    freezeInterface();
+    if(SELECTED_CARDS.length === 2) {
+        if(SELECTED_CARDS[0].querySelector("#gif").src === SELECTED_CARDS[1].querySelector("#gif").src) {
+            SELECTED_CARDS[0].onclick = null;
+            SELECTED_CARDS[1].onclick = null;
+            resetSelectedCards();
+        } else {
+            setTimeout(() => {
+                SELECTED_CARDS[0].querySelector("#gif").className = "hidden";
+                SELECTED_CARDS[0].querySelector("#static-img").className = "";
+                SELECTED_CARDS[0].className = "unactive";
+    
+                SELECTED_CARDS[1].querySelector("#gif").className = "hidden";
+                SELECTED_CARDS[1].querySelector("#static-img").className = "";
+                SELECTED_CARDS[1].className = "unactive";
+                resetSelectedCards();
+            }, 1300);
+        }
+    }
+}
+
+function resetSelectedCards() {
+    SELECTED_CARDS = [];
+}
+
+function freezeInterface() {
+    document.querySelectorAll("unactive").onclick = null;
+}
 
