@@ -2,6 +2,7 @@
 //                                      DOM POPULATOR:                  
 // ###############################################################################################
 let SELECTED_CARDS = [];
+let PLAYER_MOVES = 0; // how many times the player flipped a card
 
 const IMAGES_PATH = [
     "../assets/gif/bobrossparrot.gif",
@@ -111,13 +112,18 @@ function shuffleArray(array, length) {
 // ###############################################################################################
 
 
-
+/** 
+ * shows the gif image and stores the DOM element who called in SELECTED_CARDS
+ * @return {void} void
+ */
 function cardActivator() {
     if(SELECTED_CARDS.length === 2 || this.className === "active") { // prevents from adding the same card to the SELECTED_CARDS array
         return;
     }
-    console.log("ativei")
-    card = this;
+
+    PLAYER_MOVES += 1;
+
+    card = this; // Element who called the function
     card.className = "active";
     card.querySelector("#gif").classList.toggle("hidden")
     card.querySelector("#static-img").classList.toggle("hidden")
@@ -126,33 +132,70 @@ function cardActivator() {
     parityChecker();
 }
 
+
+/** 
+ * When two cards are selected, verifyes if both of them have the same gif, freezing them if they have.
+ * otherwise, just waits 1.3 seconds, reseting SELECTED_CARDS and its items to the previous state .
+ */
 function parityChecker() {
-    freezeInterface();
     if(SELECTED_CARDS.length === 2) {
         if(SELECTED_CARDS[0].querySelector("#gif").src === SELECTED_CARDS[1].querySelector("#gif").src) {
             SELECTED_CARDS[0].onclick = null;
             SELECTED_CARDS[1].onclick = null;
-            resetSelectedCards();
+            resetSelectedCardsArray();
+            endGameManager();
         } else {
             setTimeout(() => {
-                SELECTED_CARDS[0].querySelector("#gif").className = "hidden";
-                SELECTED_CARDS[0].querySelector("#static-img").className = "";
-                SELECTED_CARDS[0].className = "unactive";
-    
-                SELECTED_CARDS[1].querySelector("#gif").className = "hidden";
-                SELECTED_CARDS[1].querySelector("#static-img").className = "";
-                SELECTED_CARDS[1].className = "unactive";
-                resetSelectedCards();
-            }, 1300);
+                resetSelectedItems();
+                resetSelectedCardsArray();
+            }, 1000);
         }
     }
 }
 
-function resetSelectedCards() {
+/** 
+ * Resets the cards and all its relevants children to the initial state
+ * @return {void} void
+ */
+function resetSelectedItems() {
+    SELECTED_CARDS[0].querySelector("#gif").className = "hidden";
+    SELECTED_CARDS[0].querySelector("#static-img").className = "";
+    SELECTED_CARDS[0].className = "unactive";
+
+    SELECTED_CARDS[1].querySelector("#gif").className = "hidden";
+    SELECTED_CARDS[1].querySelector("#static-img").className = "";
+    SELECTED_CARDS[1].className = "unactive";
+}
+
+function resetSelectedCardsArray() {
     SELECTED_CARDS = [];
 }
 
-function freezeInterface() {
-    document.querySelectorAll("unactive").onclick = null;
+/** 
+ * Delete all cards permanently 
+ */
+function clearInterface() {
+    document.querySelector("main").innerText = "";
 }
 
+function endGameManager() {
+    const thereAreUncoveredCardYet = document.querySelectorAll(".unactive").length > 0;
+
+    if(thereAreUncoveredCardYet) {
+        return;
+    }
+
+    const message = `Você ganhou em ${PLAYER_MOVES} jogadas!`;
+    setTimeout(() => {
+        alert(message);
+        let opcao;
+        while(opcao !== "s" && opcao !== 'n') {
+            opcao = prompt("Gostaria de jogar novamente? 's' para sim, 'n' para não");
+        }
+
+        if(opcao === "s") {
+            clearInterface();
+            firstInteractioManager();
+        }
+    }, 500)
+}
