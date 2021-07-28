@@ -20,12 +20,17 @@ const CLOCK_SCREEN = document.querySelector("#clock");
 
 function startClock() {
     setInterval(() => {
-        console.log(TIME);
         TIME += 1;
         CLOCK_SCREEN.innerText =  parseIntTimeToString(TIME);
     }, 1000)
 }
 
+/** 
+ * Parse an int value into a formated string to be displayed on HTML
+ * @example parseIntToString(733); // "00:12:13"
+ * @param {Number} intTime a time in seconds to be formated 
+ * @return {String} a string in the format "xx:xx:xx"
+ */
 function parseIntTimeToString(intTime) {
     const intHours = parseInt(intTime / 3600);
     const intMinutes = parseInt((intTime - (intHours * 3600)) / 60);
@@ -163,7 +168,7 @@ function cardActivator() {
 
 /** 
  * When two cards are selected, verifyes if both of them have the same gif, freezing them if they have.
- * otherwise, just waits 1.3 seconds, reseting SELECTED_CARDS and its items to the previous state .
+ * otherwise, just waits 1 second, reseting SELECTED_CARDS and its items to the previous state .
  */
 function parityChecker() {
     if(SELECTED_CARDS.length === 2) {
