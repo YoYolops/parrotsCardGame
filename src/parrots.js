@@ -1,9 +1,6 @@
-// ###############################################################################################
-//                                      DOM POPULATOR:                  
-// ###############################################################################################
 let SELECTED_CARDS = [];
 let PLAYER_MOVES = 0; // how many times the player flipped a card
-
+let TIME = 0;
 const IMAGES_PATH = [
     "../assets/gif/bobrossparrot.gif",
     "../assets/gif/explodyparrot.gif",
@@ -14,12 +11,42 @@ const IMAGES_PATH = [
     "../assets/gif/unicornparrot.gif",
 ]
 
-firstInteractioManager();
+const CLOCK_SCREEN = document.querySelector("#clock");
 
-function firstInteractioManager() {
+// ###############################################################################################
+//                                      TIMER:                  
+// ###############################################################################################
+
+
+function startClock() {
+    setInterval(() => {
+        console.log(TIME);
+        TIME += 1;
+        CLOCK_SCREEN.innerText =  parseIntTimeToString(TIME);
+    }, 1000)
+}
+
+function parseIntTimeToString(intTime) {
+    const intHours = parseInt(intTime / 3600);
+    const intMinutes = parseInt((intTime - (intHours * 3600)) / 60);
+    const intSeconds = intTime - ((intHours*3600) + (intMinutes*60));
+    return `${intHours <= 9 ? "0"+intHours : intHours}:${intMinutes <= 9 ? "0"+intMinutes : intMinutes}:${intSeconds <= 9 ? "0"+intSeconds : intSeconds}`;
+}
+
+
+
+// ###############################################################################################
+//                                      DOM POPULATOR:                  
+// ###############################################################################################
+
+
+
+
+// void keyword makes the function callable right after its declaration (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/void)
+void function firstInteractioManager() {
     const howManyCards = prompt("Com quantas cartas você quer jogar?");
     inputPromptValidator(howManyCards);
-}
+}();
 
 
 /** 
@@ -72,6 +99,7 @@ function inputPromptValidator(inputValue) {
         tryAnotherInput();
     } else {
         cardGenerator(inputValue)
+        startClock();
     }
 }
 
