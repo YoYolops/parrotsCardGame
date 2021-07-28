@@ -17,7 +17,7 @@ let INTERVAL_ID;
 const CLOCK_SCREEN = document.querySelector("#clock");
 
 // Run app:
-firstInteractioManager();
+firstInteractionManager();
 
 // ###############################################################################################
 //                                      TIMER:                  
@@ -54,7 +54,7 @@ function parseIntTimeToString(intTime) {
 
 
 
-function firstInteractioManager() {
+function firstInteractionManager() {
     const howManyCards = prompt("Com quantas cartas você quer jogar?");
     inputPromptValidator(howManyCards);
 };
@@ -105,7 +105,7 @@ function inputPromptValidator(inputValue) {
         isNaN(inputValue.trim()) ||
         parseInt(inputValue.trim()) > 14 ||
         parseInt(inputValue.trim()) < 4 ||
-        !isEven(Number(inputValue)))
+        Number(inputValue) % 2)
     {
         tryAnotherInput();
     } else {
@@ -211,14 +211,13 @@ function resetSelectedCardsArray() {
 }
 
 /** 
- * Delete all cards permanently 
+ * Delete all cards permanently and reset the state of global variables
  */
 function clearGameCache() {
     document.querySelector("main").innerText = "";
     SELECTED_CARDS = [];
-    PLAYER_MOVES = 0; // how many times the player flipped a card
+    PLAYER_MOVES = 0;
     TIME = 0;
-    clearInterval(INTERVAL_ID);
 }
 
 function endGameManager() {
@@ -231,15 +230,16 @@ function endGameManager() {
     const message = `Você ganhou em ${PLAYER_MOVES} jogadas ao longo de ${TIME} segundos!`;
     setTimeout(() => { // prevents the alert from being called before the last card being shown
         alert(message);
+        let opcao;
         do {
-            let opcao;
-            opcao = prompt("Gostaria de jogar novamente? 's' para sim, 'n' para não");
-        } while(opcao !== "s" && opcao !== 'n');
+            opcao = prompt("Gostaria de jogar novamente? 's' para sim, 'n' para não").toLowerCase();
+        } while(opcao !== "s" && opcao !== "n");
 
+        clearInterval(INTERVAL_ID); // stops the clock
 
         if(opcao === "s") {
             clearGameCache();
-            firstInteractioManager();
+            firstInteractionManager();
         }
     }, 50)
 }
