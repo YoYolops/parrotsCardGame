@@ -1,6 +1,7 @@
+
 let SELECTED_CARDS = [];
 let PLAYER_MOVES = 0; // how many times the player flipped a card
-let TIME = 0;
+
 const IMAGES_PATH = [
     "../assets/gif/bobrossparrot.gif",
     "../assets/gif/explodyparrot.gif",
@@ -11,18 +12,24 @@ const IMAGES_PATH = [
     "../assets/gif/unicornparrot.gif",
 ]
 
+let TIME = 0;
+let INTERVAL_ID;
 const CLOCK_SCREEN = document.querySelector("#clock");
+
+// Run app:
+firstInteractioManager();
 
 // ###############################################################################################
 //                                      TIMER:                  
 // ###############################################################################################
 
-
 function startClock() {
-    setInterval(() => {
+   const intervalID =  setInterval(() => {
         TIME += 1;
         CLOCK_SCREEN.innerText =  parseIntTimeToString(TIME);
     }, 1000)
+
+    return intervalID;
 }
 
 /** 
@@ -47,11 +54,10 @@ function parseIntTimeToString(intTime) {
 
 
 
-// void keyword makes the function callable right after its declaration (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/void)
-void function firstInteractioManager() {
+function firstInteractioManager() {
     const howManyCards = prompt("Com quantas cartas você quer jogar?");
     inputPromptValidator(howManyCards);
-}();
+};
 
 
 /** 
@@ -104,7 +110,7 @@ function inputPromptValidator(inputValue) {
         tryAnotherInput();
     } else {
         cardGenerator(inputValue)
-        startClock();
+        INTERVAL_ID = startClock();
     }
 }
 
@@ -207,8 +213,12 @@ function resetSelectedCardsArray() {
 /** 
  * Delete all cards permanently 
  */
-function clearInterface() {
+function clearGameCache() {
     document.querySelector("main").innerText = "";
+    SELECTED_CARDS = [];
+    PLAYER_MOVES = 0; // how many times the player flipped a card
+    TIME = 0;
+    clearInterval(INTERVAL_ID);
 }
 
 function endGameManager() {
@@ -218,17 +228,18 @@ function endGameManager() {
         return;
     }
 
-    const message = `Você ganhou em ${PLAYER_MOVES} jogadas!`;
-    setTimeout(() => {
+    const message = `Você ganhou em ${PLAYER_MOVES} jogadas ao longo de ${TIME} segundos!`;
+    setTimeout(() => { // prevents the alert from being called before the last card being shown
         alert(message);
-        let opcao;
-        while(opcao !== "s" && opcao !== 'n') {
+        do {
+            let opcao;
             opcao = prompt("Gostaria de jogar novamente? 's' para sim, 'n' para não");
-        }
+        } while(opcao !== "s" && opcao !== 'n');
+
 
         if(opcao === "s") {
-            clearInterface();
+            clearGameCache();
             firstInteractioManager();
         }
-    }, 500)
+    }, 50)
 }
