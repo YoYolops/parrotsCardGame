@@ -227,6 +227,8 @@ function endGameManager() {
         return;
     }
 
+    clearInterval(INTERVAL_ID); // stops the clock
+
     const message = `Você ganhou em ${PLAYER_MOVES} jogadas ao longo de ${TIME} segundos!`;
     setTimeout(() => { // prevents the alert from being called before the last card being shown
         alert(message);
@@ -234,8 +236,6 @@ function endGameManager() {
         do {
             opcao = prompt("Gostaria de jogar novamente? 's' para sim, 'n' para não").toLowerCase();
         } while(opcao !== "s" && opcao !== "n");
-
-        clearInterval(INTERVAL_ID); // stops the clock
 
         if(opcao === "s") {
             clearGameCache();
