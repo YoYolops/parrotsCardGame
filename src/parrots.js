@@ -3,13 +3,13 @@ let SELECTED_CARDS = [];
 let PLAYER_MOVES = 0; // how many times the player flipped a card
 
 const IMAGES_PATH = [
-    "../assets/gif/bobrossparrot.gif",
-    "../assets/gif/explodyparrot.gif",
-    "../assets/gif/fiestaparrot.gif",
-    "../assets/gif/metalparrot.gif",
-    "../assets/gif/revertitparrot.gif",
-    "../assets/gif/tripletsparrot.gif",
-    "../assets/gif/unicornparrot.gif",
+    "./assets/gif/bobrossparrot.gif",
+    "./assets/gif/explodyparrot.gif",
+    "./assets/gif/fiestaparrot.gif",
+    "./assets/gif/metalparrot.gif",
+    "./assets/gif/revertitparrot.gif",
+    "./assets/gif/tripletsparrot.gif",
+    "./assets/gif/unicornparrot.gif",
 ]
 
 let TIME = 0;
@@ -74,7 +74,7 @@ function cardGenerator(howManyCardShouldBeGenerated) {
         card = document.createElement("div");
 
         let image = document.createElement("img")
-        image.src = "../assets/front.png";
+        image.src = "./assets/front.png";
         image.alt = "parrot draw";
         image.id = "static-img";
 
